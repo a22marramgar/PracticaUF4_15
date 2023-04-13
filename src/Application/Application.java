@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package practicauf4_15;
+package Application;
 
 import Baralles.*;
 import Cartas.CartaInterfaz;
@@ -15,7 +15,7 @@ import static utils.UIUtilities.*;
  *
  * @author ausias
  */
-public class PracticaUF4_15 {
+public class Application {
 
     /**
      * @param args the command line arguments
