@@ -5,6 +5,7 @@
 package TipoBaralla;
 
 import Cartas.CartaEspecial;
+import Cartas.CartaInterfaz;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static utils.UIUtilities.*;
@@ -18,7 +19,7 @@ public class BarallaUno {
     /**
      * @return the cartasEspeciales
      */
-    public static ArrayList<CartaEspecial> getCartasEspeciales() {
+    public static ArrayList<CartaInterfaz> getCartasEspeciales() {
         return cartasEspeciales;
     }
     private static final ArrayList<String> palos = new ArrayList<>(
@@ -28,9 +29,9 @@ public class BarallaUno {
             Arrays.asList("0 ","1 ","1 ", "2 ","2 ", "3 ","3 ", "4 ","4 ", "5 ","5 ", 
                 "6 ","6 ", "7 ","7 ", "8 ","8 ", "9 ","9 ", "Pierde Turno ","Pierde Turno ", 
                 "Cambio de Sentido ","Cambio de Sentido ", "+2 ","+2 "));
-    private static final ArrayList<CartaEspecial> cartasEspeciales = new ArrayList<>
-        (Arrays.asList(new CartaEspecial(0, "Comodín"),new CartaEspecial(0, "Comodín")
-                ,new CartaEspecial(0, "Comodín"),new CartaEspecial(0, "Comodín")
+    private static final ArrayList<CartaInterfaz> cartasEspeciales = new ArrayList<>
+        (Arrays.asList(new CartaEspecial(0, "Comodin"),new CartaEspecial(0, "Comodin")
+                ,new CartaEspecial(0, "Comodin"),new CartaEspecial(0, "Comodin")
                 ,new CartaEspecial(0, "+4 negro"),new CartaEspecial(0, "+4 negro")
                 ,new CartaEspecial(0, "+4 negro"),new CartaEspecial(0, "+4 negro")));
 

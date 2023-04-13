@@ -1,5 +1,6 @@
 package utils;
 
+import Cartas.CartaInterfaz;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -204,6 +205,23 @@ public static final String ANSI_WHITE = "\u001B[37m";
         System.out.println("--------------");
         for (String a : datos) {
             System.out.println(num + ". " + a);
+            num++;
+        }
+        opcio = escollirOpcio(1, num, "Invalid");
+        return opcio;
+    }
+    
+     /**
+     * Funcion para mostrar por pantalla un menu y elegir una opcion
+     *
+     * @return la opcion
+     */
+    public static int MenuCartas(List<CartaInterfaz> cartas) {
+        int opcio;
+        int num = 1;
+        System.out.println("--------------");
+        for (CartaInterfaz a : cartas) {
+            System.out.println(num + ". " + a.getName());
             num++;
         }
         opcio = escollirOpcio(1, num, "Invalid");

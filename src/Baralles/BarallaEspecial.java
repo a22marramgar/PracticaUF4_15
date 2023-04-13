@@ -4,7 +4,7 @@
  */
 package Baralles;
 
-import Cartas.CartaEspecial;
+import Cartas.CartaInterfaz;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +14,24 @@ import java.util.List;
  */
 public class BarallaEspecial extends BarallaSimple {
     
-    private ArrayList<CartaEspecial> _cartesEspecials;
+    private ArrayList<CartaInterfaz> _cartesEspecials;
     
-    public BarallaEspecial(List<String> palos, List<String> nombresDeCartaPorPalo, List<CartaEspecial> cartesEspecials) {
+    public BarallaEspecial(List<String> palos, List<String> nombresDeCartaPorPalo, List<CartaInterfaz> cartesEspecials) {
         super(palos, nombresDeCartaPorPalo);
         this._cartesEspecials = new ArrayList<>(cartesEspecials);
         super.afegirCartes(cartesEspecials);
+    }
+    
+    @Override
+    public boolean afegirMunt(CartaInterfaz carta){
+        if(carta.getTipo().equals("ESPECIAL")
+                ||super.veureMunt().get(super.veureMunt().lastIndexOf(this)).getTipo().equals(carta.getTipo())
+                ||super.veureMunt().get(this.veureMunt().lastIndexOf(this)).getNumero()==carta.getNumero()){
+            super.afegirMunt(carta);
+            return true;
+        }else{
+            return false;
+        }
     }
     
 }

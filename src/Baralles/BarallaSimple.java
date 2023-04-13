@@ -63,15 +63,20 @@ public class BarallaSimple implements BarallaInterfaz {
         return toReturn;
     }
     
-    public void afegirCartes(List<CartaEspecial> cartesAAfegir){
-        for (CartaEspecial cartaEspecial : cartesAAfegir) {
-            this._cartes.add(cartaEspecial);
+    public void afegirCartes(List<CartaInterfaz> cartesAAfegir){
+        for (CartaInterfaz carta : cartesAAfegir) {
+            this._cartes.add(carta);
         }
     }
 
     @Override
     public List<CartaInterfaz> veureMunt() {
         return this._munt;
+    }
+
+    @Override
+    public boolean afegirMunt(CartaInterfaz carta) {     
+      return this._munt.add(carta);
     }
 
 }

@@ -16,5 +16,6 @@ public interface BarallaInterfaz{
     public List<CartaInterfaz> repartirCartes(int nCartes);
     public List<CartaInterfaz> repartirCartes(int nCartes, boolean force);
     public List<CartaInterfaz> veureMunt();
+    public boolean afegirMunt(CartaInterfaz carta);
     public int cartesDisponibles();
 }
