@@ -6,6 +6,9 @@ package Application;
 
 import Baralles.*;
 import Cartas.CartaInterfaz;
+import Jugadors.Jugador;
+import Jugadors.JugadorInterface;
+import Partida.Control;
 import TipoBaralla.BarallaEspanyola;
 import TipoBaralla.BarallaUno;
 import java.util.*;
@@ -21,43 +24,37 @@ public class Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        BarallaInterfaz baralla1 = escollirBaralla();
-        int opcio = 0;
-        do {
-            opcio = Menu("Barrejar", "Seguent carta",
-                    "Cartes disponibles", "Demanar cartes",
-                    "Repartir cartes", "Veure munt", "Reiniciar",
-                    "Sortir");
-            clearScreen();
-            switch (opcio) {
-                case 2:
-                    List<CartaInterfaz> cartaRepartida = baralla1.repartirCartes(1);
-                    System.out.println(cartaRepartida.get(0).getName());
-                    break;
-                case 6:
-                    for (Object carta : baralla1.veureMunt()) {
-                        System.out.println(((CartaInterfaz) carta).getName());
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } while (opcio != 8);
+        BarallaInterfaz baralla1 = new BarallaEspecial(BarallaUno.getPalos()
+                        , BarallaUno.getNumerosCarta()
+                        , BarallaUno.getCartasEspeciales());
+        int nJugadores = llegirInt("Numero de jugadors: ");
+        ArrayList<JugadorInterface> jugadores = new ArrayList<>();
+        for (int i = 0; i < nJugadores; i++) {
+            JugadorInterface nuevoJugador = new Jugador();
+            jugadores.add(nuevoJugador);
+        }
+        Control partida = new Control(baralla1, jugadores);
+        partida.iniciarPartida();
 
     }
 
+    /**
+     * NO FUNCIONA BIEN
+     * @return
+     * @throws AssertionError 
+     */
     private static BarallaInterfaz escollirBaralla() throws AssertionError {
         int opcioBaralla = MenuClassesInPackage("TipoBaralla");
         BarallaInterfaz barallaEscollida;
         switch (opcioBaralla) {
             case 1:
                 barallaEscollida = new BarallaEspecial(BarallaUno.getPalos()
-                        , BarallaUno.getNombresCarta()
+                        , BarallaUno.getNumerosCarta()
                         , BarallaUno.getCartasEspeciales());
                 break;
             case 2:
                 barallaEscollida = new BarallaSimple(BarallaEspanyola.getPalos()
-                        ,BarallaEspanyola.getNombresCarta());
+                        ,BarallaEspanyola.getNumerosCarta());
                 break;
             default:
                 throw new AssertionError();

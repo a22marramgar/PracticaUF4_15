@@ -5,6 +5,7 @@
 package Baralles;
 
 import Cartas.CartaInterfaz;
+import Jugadors.JugadorInterface;
 import java.util.List;
 
 /**

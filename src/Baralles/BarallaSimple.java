@@ -4,7 +4,6 @@
  */
 package Baralles;
 
-import Cartas.CartaEspecial;
 import Cartas.CartaInterfaz;
 import Cartas.CartaSimple;
 import java.util.ArrayList;
@@ -20,12 +19,12 @@ public class BarallaSimple implements BarallaInterfaz {
     private ArrayList<CartaInterfaz> _cartes;
     private ArrayList<CartaInterfaz> _munt;
 
-    public BarallaSimple(List<String> palos, List<String> nombresDeCartaPorPalo) {
+    public BarallaSimple(List<String> palos, List<String> numeros) {
         this._cartes = new ArrayList<>();
         this._munt = new ArrayList<>();
             for (String palo : palos) {
-                for (int i = 0; i < nombresDeCartaPorPalo.size(); i++) {
-                    this._cartes.add(new CartaSimple(palo,i+1,nombresDeCartaPorPalo.get(i)+palo));
+                for (String numero : numeros) {
+                    this._cartes.add(new CartaSimple(palo,numero,numero+palo));
                 }
             }
 
@@ -59,7 +58,6 @@ public class BarallaSimple implements BarallaInterfaz {
                 toReturn.add(this._cartes.remove(0));
             }
         }
-        this._munt.addAll(toReturn);
         return toReturn;
     }
     

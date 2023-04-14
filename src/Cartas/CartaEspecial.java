@@ -10,7 +10,7 @@ package Cartas;
  */
 public class CartaEspecial extends CartaSimple {
     
-    public CartaEspecial(int numero, String nombre) {
+    public CartaEspecial(String numero, String nombre) {
         super("Especial", numero, nombre);
     }
     

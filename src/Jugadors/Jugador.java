@@ -16,7 +16,7 @@ public class Jugador implements JugadorInterface{
     
     private int _id;
     private ArrayList<CartaInterfaz> _cartas;
-    private static int currentId;
+    private static int currentId = 1;
     
     public Jugador(){
         this._cartas = new ArrayList<>();
@@ -35,8 +35,8 @@ public class Jugador implements JugadorInterface{
     }
 
     @Override
-    public void addCartas(List<CartaInterfaz> lista) {
-        this._cartas.addAll(lista);
+    public boolean addCartas(List<CartaInterfaz> lista) {
+        return this._cartas.addAll(lista);
     }
     
 }

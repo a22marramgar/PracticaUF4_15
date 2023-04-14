@@ -16,8 +16,8 @@ public class BarallaEspecial extends BarallaSimple {
     
     private ArrayList<CartaInterfaz> _cartesEspecials;
     
-    public BarallaEspecial(List<String> palos, List<String> nombresDeCartaPorPalo, List<CartaInterfaz> cartesEspecials) {
-        super(palos, nombresDeCartaPorPalo);
+    public BarallaEspecial(List<String> palos, List<String> numeros, List<CartaInterfaz> cartesEspecials) {
+        super(palos,numeros);
         this._cartesEspecials = new ArrayList<>(cartesEspecials);
         super.afegirCartes(cartesEspecials);
     }
@@ -25,8 +25,9 @@ public class BarallaEspecial extends BarallaSimple {
     @Override
     public boolean afegirMunt(CartaInterfaz carta){
         if(carta.getTipo().equals("ESPECIAL")
-                ||super.veureMunt().get(super.veureMunt().lastIndexOf(this)).getTipo().equals(carta.getTipo())
-                ||super.veureMunt().get(this.veureMunt().lastIndexOf(this)).getNumero()==carta.getNumero()){
+                ||super.veureMunt().isEmpty()
+                ||super.veureMunt().get(super.veureMunt().size()-1).getTipo().equals(carta.getTipo())
+                ||super.veureMunt().get(this.veureMunt().size()-1).getNumero()==carta.getNumero()){
             super.afegirMunt(carta);
             return true;
         }else{

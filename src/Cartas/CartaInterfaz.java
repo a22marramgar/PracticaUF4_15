@@ -10,6 +10,8 @@ package Cartas;
  */
 public interface CartaInterfaz {
     public String getTipo();
-    public int getNumero();
+    public void setTipo(String tipo);
+    public String getNumero();
     public String getName();
+    public void setName(String name);
 }

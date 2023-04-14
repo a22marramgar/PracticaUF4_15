@@ -14,6 +14,6 @@ import java.util.List;
 public interface JugadorInterface {
     public List<CartaInterfaz> getMano();
     public int getId();
-    public void addCartas(List<CartaInterfaz> lista);
+    public boolean addCartas(List<CartaInterfaz> lista);
     
 }

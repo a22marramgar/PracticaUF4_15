@@ -26,7 +26,7 @@ public class BarallaEspanyola {
     /**
      * @return the nombresCarta
      */
-    public static ArrayList<String> getNombresCarta() {
+    public static ArrayList<String> getNumerosCarta() {
         return nombresCarta;
     }
 }

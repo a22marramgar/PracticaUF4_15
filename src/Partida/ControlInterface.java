@@ -4,9 +4,7 @@
  */
 package Partida;
 
-import Cartas.CartaInterfaz;
 import Jugadors.JugadorInterface;
-import java.util.List;
 
 /**
  *
@@ -14,8 +12,7 @@ import java.util.List;
  */
 public interface ControlInterface {
     public void iniciarPartida();
-    public void iniciarTurno(JugadorInterface jugador);
-    public void mostrarCartas(List<CartaInterfaz> cartas);
+    public boolean iniciarTurno(JugadorInterface jugador);
     public JugadorInterface getTurno();
     /**
      * 

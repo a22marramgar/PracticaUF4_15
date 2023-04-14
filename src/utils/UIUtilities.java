@@ -224,6 +224,8 @@ public static final String ANSI_WHITE = "\u001B[37m";
             System.out.println(num + ". " + a.getName());
             num++;
         }
+        System.out.println(num + ". Robar");
+        num++;
         opcio = escollirOpcio(1, num, "Invalid");
         return opcio;
     }
