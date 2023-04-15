@@ -1,8 +1,12 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
-
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Clase de utilidades
@@ -11,6 +15,16 @@ import java.util.Scanner;
  *
  */
 public class UIUtilities {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     private static Scanner input = new Scanner(System.in);
 
@@ -84,6 +98,7 @@ public class UIUtilities {
 
         return numero;
     }
+
     /**
      * Demana un valor de tipus int
      *
@@ -137,7 +152,8 @@ public class UIUtilities {
      *
      * @param max int més gran
      * @param min int més petit
-     * @param mensaje Mensaje que se mostrara cuando el numero no cumpla las condiciones
+     * @param mensaje Mensaje que se mostrara cuando el numero no cumpla las
+     * condiciones
      * @return int que es trobi en el rang especificat
      */
     public static int escollirOpcio(int min, int max, String mensaje) {
@@ -145,7 +161,7 @@ public class UIUtilities {
         boolean valid = false;
         do {
             opcio = llegirInt();
-            if (opcio <= max && opcio >= min) {
+            if (opcio < max && opcio >= min) {
                 valid = true;
             } else {
                 System.out.println(mensaje);
@@ -161,53 +177,82 @@ public class UIUtilities {
         System.out.print("\n\n\n\n\n\n\n\n\n\n");
         System.out.flush();
     }
-     
+
     /**
      * Funcion para mostrar por pantalla un menu y elegir una opcion
      *
      * @param opciones Las opciones que tendra el menu en String
      * @return int opcio
      */
-    public static int Menu(String ...opciones) {
+    public static int Menu(String... opciones) {
         int opcio;
-        int num=1;
+        int num = 1;
         System.out.println("---------------");
-        for(String a:opciones){
-            System.out.println(num+". "+a);
+        for (String a : opciones) {
+            System.out.println(num + ". " + a);
             num++;
         }
-        opcio = escollirOpcio(1, num,"Invalid");
+        opcio = escollirOpcio(1, num, "Invalid");
         return opcio;
     }
-    
+
     /**
      * Funcion para mostrar por pantalla un menu y elegir una opcion
+     *
      * @param datos ArrayList de Strings con las opciones
      * @return la opcion
      */
     public static int MenuAL(ArrayList<String> datos) {
         int opcio;
-        int num=1;
+        int num = 1;
         System.out.println("--------------");
         for (String a : datos) {
-            System.out.println(num+". "+a);
+            System.out.println(num + ". " + a);
             num++;
         }
-        opcio = escollirOpcio(1, num,"Invalid");
+        opcio = escollirOpcio(1, num, "Invalid");
         return opcio;
     }
-    
+
+    /**
+     * Funcion para mostrar por pantalla un menu y elegir una opcion
+     *
+     * @param packageName
+     * @return la opcion
+     */
+    public static int MenuClassesInPackage(String packageName) {
+        AccessingAllClassesInPackage instance = new AccessingAllClassesInPackage();
+
+        HashSet<Class> classes = (HashSet<Class>) instance.findAllClassesUsingClassLoader(
+                packageName);
+        ArrayList<String> sortedClasses = new ArrayList<>();
+        for (Class classe : classes) {
+            sortedClasses.add(classe.getSimpleName());
+        }
+        Collections.sort(sortedClasses);
+        int opcio;
+        int num = 1;
+        System.out.println("--------------");
+        for (String clase : sortedClasses) {
+            System.out.println(num + ". " + clase);
+            num++;
+        }
+        opcio = escollirOpcio(1, num, "Invalid");
+        return opcio;
+    }
+
     /**
      * Funcion para centrar texto al imprimir una tabla en rango determinado
+     *
      * @param texto el texto añadir
      * @param espacio el numero de espacios que tendra
      * @return el texto ya formateado
      */
-    public static String CentrarTexto(String texto, int espacio){
-        int espIzq = (espacio-texto.length())/2;
-        texto = String.format("%"+(espIzq+texto.length())+"s", texto);
-        texto = String.format("%-"+espacio+"s", texto);
+    public static String CentrarTexto(String texto, int espacio) {
+        int espIzq = (espacio - texto.length()) / 2;
+        texto = String.format("%" + (espIzq + texto.length()) + "s", texto);
+        texto = String.format("%-" + espacio + "s", texto);
         return texto;
     }
-    
+
 }

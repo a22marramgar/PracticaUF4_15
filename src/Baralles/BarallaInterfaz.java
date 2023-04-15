@@ -11,10 +11,11 @@ import java.util.List;
  *
  * @author Mario
  */
-public interface BarallaInterfaz<T>{
+public interface BarallaInterfaz{
     public void barallar();
-    public List<T> repartirCartes(int nCartes);
-    public List<T> repartirCartes(int nCartes, boolean force);
-    public List<T> veureMunt();
+    public List<CartaInterfaz> repartirCartes(int nCartes);
+    public List<CartaInterfaz> repartirCartes(int nCartes, boolean force);
+    public List<CartaInterfaz> veureMunt();
     public int cartesDisponibles();
+    public boolean borrarNumero(int numero);
 }
