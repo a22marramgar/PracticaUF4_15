@@ -24,7 +24,7 @@ public class BarallaEspecial extends BarallaSimple {
     
     @Override
     public boolean afegirMunt(CartaInterfaz carta){
-        if(carta.getTipo().equals("ESPECIAL")
+        if(carta.getTipo().equals("Especial")
                 ||super.veureMunt().isEmpty()
                 ||super.veureMunt().get(super.veureMunt().size()-1).getTipo().equals(carta.getTipo())
                 ||super.veureMunt().get(this.veureMunt().size()-1).getNumero()==carta.getNumero()){

@@ -23,17 +23,16 @@ public class BarallaUno {
         return cartasEspeciales;
     }
     private static final ArrayList<String> palos = new ArrayList<>(
-            Arrays.asList(ANSI_RED+"Rojo"+ANSI_RESET, ANSI_YELLOW+"Amarillo"+ANSI_RESET
-                    , ANSI_BLUE+"Azul"+ANSI_RESET, ANSI_GREEN+"Verde"+ANSI_RESET));
+            Arrays.asList("Rojo", "Amarillo", "Azul", "Verde"));
     private static final ArrayList<String> numerosCarta = new ArrayList<>(
             Arrays.asList("0 ","1 ","1 ", "2 ","2 ", "3 ","3 ", "4 ","4 ", "5 ","5 ", 
                 "6 ","6 ", "7 ","7 ", "8 ","8 ", "9 ","9 ", "Pierde Turno ","Pierde Turno ", 
                 "Cambio de Sentido ","Cambio de Sentido ", "+2 ","+2 "));
     private static final ArrayList<CartaInterfaz> cartasEspeciales = new ArrayList<>
-        (Arrays.asList(new CartaEspecial("0", "Comodin "),new CartaEspecial("0", "Comodin ")
-                ,new CartaEspecial("0", "Comodin "),new CartaEspecial("0", "Comodin ")
-                ,new CartaEspecial("0", "+4 "),new CartaEspecial("0", "+4 ")
-                ,new CartaEspecial("0", "+4 "),new CartaEspecial("0", "+4 ")));
+        (Arrays.asList(new CartaEspecial("Comodin ", "Comodin "),new CartaEspecial("Comodin ", "Comodin ")
+                ,new CartaEspecial("Comodin ", "Comodin "),new CartaEspecial("Comodin ", "Comodin ")
+                ,new CartaEspecial("+4 ", "+4 "),new CartaEspecial("+4 ", "+4 ")
+                ,new CartaEspecial("+4 ", "+4 "),new CartaEspecial("+4 ", "+4 ")));
 
     /**
      * @return the palos

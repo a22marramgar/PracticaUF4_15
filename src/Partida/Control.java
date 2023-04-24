@@ -7,6 +7,7 @@ package Partida;
 import Baralles.BarallaInterfaz;
 import Cartas.CartaInterfaz;
 import Jugadors.JugadorInterface;
+import UI.JuegoUI;
 import java.util.ArrayList;
 import java.util.List;
 import static utils.UIUtilities.*;
@@ -42,8 +43,11 @@ public class Control implements ControlInterface {
     public void iniciarPartida() {
         boolean finPartida = false;
         this._baralla.afegirMunt(this._baralla.repartirCartes(1).get(0));
+        usarCarta();
         while (!finPartida) {
-            System.out.println("En juego: " + this._baralla.veureMunt().get(this._baralla.veureMunt().size() - 1).getName());
+            String nomCartaMunt = this._baralla.veureMunt().get(this._baralla.veureMunt().size()-1).getName();
+            
+            System.out.println("En juego: " + nomCartaMunt);
             System.out.println("Turno del jugador " + getTurno().getId());
             boolean efectoResuelto = resolverEfectos(getTurno());
             if (efectoResuelto) {
@@ -53,6 +57,8 @@ public class Control implements ControlInterface {
                 pasarTurno();
             }
         }
+        System.out.println(this._baralla.equals(this));
+        this._baralla.veureMunt();
     }
 
     @Override
@@ -65,8 +71,9 @@ public class Control implements ControlInterface {
                 accioFeta = this._baralla.afegirMunt(jugador.getMano().get(opcio - 1));
                 if (accioFeta) {
                     jugador.getMano().remove(opcio - 1);
+                    usarCarta();
                 }
-                usarCarta();
+                
             } else {
                 accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
                 if (!accioFeta) {
@@ -149,19 +156,20 @@ public class Control implements ControlInterface {
                 "Amarillo", "Verde");
         switch (opcio) {
             case 1:
-                cartaJugada.setTipo("Rojo");
-                cartaJugada.setName(cartaJugada.getName() + ANSI_RED + "Rojo" + ANSI_RESET);
+                cartaJugada.setTipo(ANSI_RED+"Rojo"+ANSI_RESET);
+                cartaJugada.setName(cartaJugada.getName() + cartaJugada.getTipo());
                 break;
             case 2:
-                cartaJugada.setTipo("Azul");
-                cartaJugada.setName(cartaJugada.getName() + ANSI_BLUE + "Azul" + ANSI_RESET);
+                cartaJugada.setTipo(ANSI_BLUE+"Azul"+ANSI_RESET);
+                cartaJugada.setName(cartaJugada.getName() + cartaJugada.getTipo());
                 break;
             case 3:
-                cartaJugada.setTipo("Amarillo");
-                cartaJugada.setName(cartaJugada.getName() + ANSI_YELLOW + "Amarillo" + ANSI_RESET);
+                cartaJugada.setTipo(ANSI_YELLOW+"Amarillo"+ANSI_RESET);
+                cartaJugada.setName(cartaJugada.getName() + cartaJugada.getTipo());
+                break;
             case 4:
-                cartaJugada.setTipo("Verde");
-                cartaJugada.setName(cartaJugada.getName() + ANSI_GREEN + "Verde" + ANSI_RESET);
+                cartaJugada.setTipo(ANSI_GREEN+"Verde"+ANSI_RESET);
+                cartaJugada.setName(cartaJugada.getName() + cartaJugada.getTipo());
             default:
                 break;
         }
@@ -178,9 +186,10 @@ public class Control implements ControlInterface {
             } else {
                 int opcio = MenuCartas(cartasCounter);
                 if (opcio <= cartasCounter.size()) {
-                    efectoResuelto = this._baralla.afegirMunt(jugador.getMano().get(opcio - 1));
-                    if (efectoResuelto) {
-                        cartasCounter.remove(opcio - 1);
+                    int posicion = buscarCarta(cartasCounter.get(opcio - 1), jugador.getMano());
+                    efectoResuelto = !(this._baralla.afegirMunt(jugador.getMano().remove(posicion)));
+                    
+                    if (!efectoResuelto) {
                         usarCarta();
                     }
 
@@ -213,5 +222,15 @@ public class Control implements ControlInterface {
         efectoResuelto = true;
         return efectoResuelto;
     }
+
+    private int buscarCarta(CartaInterfaz cartaBuscada, List<CartaInterfaz> lista) {
+        for(int i = 0; i<lista.size();i++){
+            if(cartaBuscada==lista.get(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
 
 }
