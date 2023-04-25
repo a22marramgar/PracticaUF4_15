@@ -44,6 +44,7 @@ public class MenuUI extends javax.swing.JFrame {
         setTitle("UNO Version MarloMagic");
         setForeground(java.awt.Color.white);
         setIconImages(null);
+        setPreferredSize(new java.awt.Dimension(1908, 1425));
         setSize(new java.awt.Dimension(1920, 1080));
 
         opcionJugadores.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N

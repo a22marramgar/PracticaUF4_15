@@ -14,11 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.JButton;
-import static utils.UIUtilities.ANSI_BLUE;
-import static utils.UIUtilities.ANSI_GREEN;
-import static utils.UIUtilities.ANSI_RED;
-import static utils.UIUtilities.ANSI_RESET;
-import static utils.UIUtilities.ANSI_YELLOW;
+import javax.swing.JLabel;
 import static utils.UIUtilities.Menu;
 import static utils.UIUtilities.MenuCartas;
 
@@ -58,7 +54,6 @@ public class JuegoUI extends javax.swing.JFrame {
         boolean finPartida = false;
         this._baralla.afegirMunt(this._baralla.repartirCartes(1).get(0));
         usarCarta();
-        while (!finPartida) {
             String nomCartaMunt = this._baralla.veureMunt().get(this._baralla.veureMunt().size() - 1).getName();
             pile.setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + nomCartaMunt.replace(" ", "") + ".png"));
             labelJugador.setText("Jugador " + getTurno().getId());
@@ -68,38 +63,46 @@ public class JuegoUI extends javax.swing.JFrame {
             if (efectoResuelto) {
                 finPartida = iniciarTurno(getTurno());
             }
-            if (!finPartida) {
-                pasarTurno();
-            }
-        }
-        System.out.println(this._baralla.equals(this));
-        this._baralla.veureMunt();
 
     }
 
     public boolean iniciarTurno(JugadorInterface jugador) {
         int opcio = 0;
         boolean accioFeta = false;
-        do {
-            opcio = MenuCartas(jugador.getMano());
-            if (opcio <= jugador.getMano().size()) {
-                accioFeta = this._baralla.afegirMunt(jugador.getMano().get(opcio - 1));
-                if (accioFeta) {
-                    jugador.getMano().remove(opcio - 1);
-                    usarCarta();
-                }
+        ArrayList<JButton> cartasMano = new ArrayList<>();
+        cartasMano.add(cartasMano0);
+        cartasMano.add(cartasMano1);
+        cartasMano.add(cartasMano1);
+        cartasMano.add(cartasMano3);
+        cartasMano.add(cartasMano4);
+        cartasMano.add(cartasMano5);
+        cartasMano.add(cartasMano6);
+        for (int i = 0; i < cartasMano.size(); i++) {
 
+            if (jugador.getMano().size() > i) {
+                cartasMano.get(i).setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + jugador.getMano().get(i).getName()
+                        .replace(" ", "") + ".png"));
             } else {
-                accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
-                if (!accioFeta) {
-                    System.out.println("No hay cartas, pasar turno?");
-                    if (Menu("Si", "No") == 1) {
-                        accioFeta = true;
-                    }
-                }
-
+                cartasMano.get(i).setIcon(null);
             }
-        } while (!accioFeta);
+        }
+        /*if (opcio <= jugador.getMano().size()) {
+            accioFeta = this._baralla.afegirMunt(jugador.getMano().get(opcio - 1));
+            if (accioFeta) {
+                jugador.getMano().remove(opcio - 1);
+                usarCarta();
+            }
+
+        } else {
+            accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
+            if (!accioFeta) {
+                System.out.println("No hay cartas, pasar turno?");
+                if (Menu("Si", "No") == 1) {
+                    accioFeta = true;
+                }
+            }
+
+        }*/
 
         return jugador.getMano().isEmpty();
     }
@@ -142,12 +145,27 @@ public class JuegoUI extends javax.swing.JFrame {
     private boolean resolverEfectos(JugadorInterface jugador) {
         boolean efectoResuelto = true;
         if (this._efectoRobarCartas != 0) {
-            System.out.println("EFECTO!");
-            System.out.println("Tienes que robar " + this._efectoRobarCartas + " cartas");
+            this.labelEfecto.setText("Tienes que robar " + this._efectoRobarCartas + " cartas");
             ArrayList<CartaInterfaz> cartasCounter = buscarCounter(jugador);
             if (cartasCounter.isEmpty()) {
                 efectoResuelto = resolverEfectoRobar(jugador);
             } else {
+                ArrayList<JButton> cartasMano = new ArrayList<>();
+                cartasMano.add(cartasMano0);
+                cartasMano.add(cartasMano1);
+                cartasMano.add(cartasMano1);
+                cartasMano.add(cartasMano3);
+                cartasMano.add(cartasMano4);
+                cartasMano.add(cartasMano5);
+                cartasMano.add(cartasMano6);
+                for (int i = 0; i < cartasMano.size(); i++) {
+                    if (cartasCounter.size() > i) {
+                        cartasMano.get(i).setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + cartasCounter.get(i).getName()
+                                .replace(" ", "") + ".png"));
+                    } else {
+                        cartasMano.get(i).setIcon(null);
+                    }
+                }
                 int opcio = MenuCartas(cartasCounter);
                 if (opcio <= cartasCounter.size()) {
                     int posicion = buscarCarta(cartasCounter.get(opcio - 1), jugador.getMano());
@@ -188,7 +206,7 @@ public class JuegoUI extends javax.swing.JFrame {
 
     private boolean resolverEfectoRobar(JugadorInterface jugador) {
         boolean efectoResuelto;
-        System.out.println("Robas " + this._efectoRobarCartas + " cartas");
+        labelEfecto.setText("Robas " + this._efectoRobarCartas + " cartas");
         jugador.addCartas(this._baralla.repartirCartes(this._efectoRobarCartas));
         this._efectoRobarCartas = 0;
         this._efectoEnJuego = null;
@@ -201,11 +219,11 @@ public class JuegoUI extends javax.swing.JFrame {
         panelColores.setVisible(true);
         botonRobar.setEnabled(false);
         latch = new CountDownLatch(1);
-        esperarColor();
+        esperar();
         this._efectoEnJuego = null;
     }
 
-    public void esperarColor() {
+    public void esperar() {
         try {
             latch.await(); // Llamando al método await() para bloquear la ejecución hasta que se haga clic en un botón
         } catch (InterruptedException e) {
@@ -229,6 +247,7 @@ public class JuegoUI extends javax.swing.JFrame {
                 this._turno = this._jugadores.size();
             }
         }
+        labelJugador.setText("Jugador " + getTurno().getId());
     }
 
     /**
@@ -240,16 +259,10 @@ public class JuegoUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        grupoCartas = new javax.swing.ButtonGroup();
         deck = new javax.swing.JLabel();
         botonRobar = new javax.swing.JButton();
         pile = new javax.swing.JLabel();
-        cartasMano1 = new javax.swing.JLabel();
-        cartasMano2 = new javax.swing.JLabel();
-        cartasMano3 = new javax.swing.JLabel();
-        cartasMano4 = new javax.swing.JLabel();
-        cartasMano5 = new javax.swing.JLabel();
-        cartasMano6 = new javax.swing.JLabel();
-        cartasMano7 = new javax.swing.JLabel();
         botonAnterior = new javax.swing.JButton();
         botonSiguiente = new javax.swing.JButton();
         labelJugador = new javax.swing.JLabel();
@@ -258,6 +271,14 @@ public class JuegoUI extends javax.swing.JFrame {
         botonRojo = new javax.swing.JButton();
         botonVerde = new javax.swing.JButton();
         botonAzul = new javax.swing.JButton();
+        labelEfecto = new javax.swing.JLabel();
+        cartasMano0 = new javax.swing.JButton();
+        cartasMano1 = new javax.swing.JButton();
+        cartasMano2 = new javax.swing.JButton();
+        cartasMano3 = new javax.swing.JButton();
+        cartasMano4 = new javax.swing.JButton();
+        cartasMano5 = new javax.swing.JButton();
+        cartasMano6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("UNO!");
@@ -271,20 +292,6 @@ public class JuegoUI extends javax.swing.JFrame {
                 botonRobarActionPerformed(evt);
             }
         });
-
-        cartasMano1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
-
-        cartasMano7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
 
         botonAnterior.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
         botonAnterior.setText("<");
@@ -354,6 +361,42 @@ public class JuegoUI extends javax.swing.JFrame {
                 .addContainerGap(44, Short.MAX_VALUE))
         );
 
+        labelEfecto.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
+
+        cartasMano0.setBackground(null);
+        cartasMano0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano0);
+        cartasMano0.setContentAreaFilled(false);
+        cartasMano0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano0ActionPerformed(evt);
+            }
+        });
+
+        cartasMano1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano1);
+        cartasMano1.setContentAreaFilled(false);
+
+        cartasMano2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano2);
+        cartasMano2.setContentAreaFilled(false);
+
+        cartasMano3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano3);
+        cartasMano3.setContentAreaFilled(false);
+
+        cartasMano4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano4);
+        cartasMano4.setContentAreaFilled(false);
+
+        cartasMano5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano5);
+        cartasMano5.setContentAreaFilled(false);
+
+        cartasMano6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
+        grupoCartas.add(cartasMano6);
+        cartasMano6.setContentAreaFilled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -374,10 +417,16 @@ public class JuegoUI extends javax.swing.JFrame {
                 .addGap(186, 186, 186))
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(botonAnterior)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cartasMano0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(botonAnterior)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelEfecto, javax.swing.GroupLayout.PREFERRED_SIZE, 1045, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(56, 56, 56)
+                        .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(cartasMano1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cartasMano2)
@@ -388,50 +437,54 @@ public class JuegoUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cartasMano5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cartasMano6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cartasMano7))
-                    .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cartasMano6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(botonSiguiente)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(192, 192, 192)
+                        .addComponent(botonRobar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pile)
+                            .addComponent(deck)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(144, 144, 144)
-                        .addComponent(labelJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cartasMano2))
+                        .addComponent(labelJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(192, 192, 192)
-                                .addComponent(botonRobar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(22, 22, 22)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pile)
-                                    .addComponent(deck))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(labelEfecto, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(104, 104, 104)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(515, 515, 515)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cartasMano1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cartasMano3, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cartasMano4, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cartasMano5, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cartasMano6, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cartasMano7, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(botonAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(132, 132, 132))
+                                .addGap(159, 159, 159))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(botonSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(127, 127, 127)))))
-                .addGap(27, 27, 27))
+                                .addGap(154, 154, 154))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cartasMano1)
+                            .addComponent(cartasMano0)
+                            .addComponent(cartasMano2)
+                            .addComponent(cartasMano3)
+                            .addComponent(cartasMano4)
+                            .addComponent(cartasMano5)
+                            .addComponent(cartasMano6))
+                        .addContainerGap())))
         );
 
         pack();
@@ -439,6 +492,11 @@ public class JuegoUI extends javax.swing.JFrame {
 
     private void botonRobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRobarActionPerformed
         // TODO add your handling code here:
+        JugadorInterface jugador = getTurno();
+        boolean accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
+        if(accioFeta){
+            pasarTurno();
+        }
     }//GEN-LAST:event_botonRobarActionPerformed
 
     private void botonRojoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRojoActionPerformed
@@ -477,6 +535,11 @@ public class JuegoUI extends javax.swing.JFrame {
         latch.countDown();
     }//GEN-LAST:event_botonAzulActionPerformed
 
+    private void cartasMano0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano0ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cartasMano0ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonAmarillo;
@@ -486,14 +549,16 @@ public class JuegoUI extends javax.swing.JFrame {
     private javax.swing.JButton botonRojo;
     private javax.swing.JButton botonSiguiente;
     private javax.swing.JButton botonVerde;
-    private javax.swing.JLabel cartasMano1;
-    private javax.swing.JLabel cartasMano2;
-    private javax.swing.JLabel cartasMano3;
-    private javax.swing.JLabel cartasMano4;
-    private javax.swing.JLabel cartasMano5;
-    private javax.swing.JLabel cartasMano6;
-    private javax.swing.JLabel cartasMano7;
+    private javax.swing.JButton cartasMano0;
+    private javax.swing.JButton cartasMano1;
+    private javax.swing.JButton cartasMano2;
+    private javax.swing.JButton cartasMano3;
+    private javax.swing.JButton cartasMano4;
+    private javax.swing.JButton cartasMano5;
+    private javax.swing.JButton cartasMano6;
     private javax.swing.JLabel deck;
+    private javax.swing.ButtonGroup grupoCartas;
+    private javax.swing.JLabel labelEfecto;
     private javax.swing.JLabel labelJugador;
     private javax.swing.JPanel panelColores;
     private javax.swing.JLabel pile;
