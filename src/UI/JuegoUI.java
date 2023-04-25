@@ -31,6 +31,7 @@ public class JuegoUI extends javax.swing.JFrame {
     private int _efectoRobarCartas;
     private boolean _sentido;
     private CountDownLatch latch;
+    private int filaCartas = 0;
 
     /**
      * Creates new form JuegoUI
@@ -54,57 +55,19 @@ public class JuegoUI extends javax.swing.JFrame {
         boolean finPartida = false;
         this._baralla.afegirMunt(this._baralla.repartirCartes(1).get(0));
         usarCarta();
-            String nomCartaMunt = this._baralla.veureMunt().get(this._baralla.veureMunt().size() - 1).getName();
-            pile.setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + nomCartaMunt.replace(" ", "") + ".png"));
-            labelJugador.setText("Jugador " + getTurno().getId());
+        cambioImagenMunt();
+        labelJugador.setText("Jugador " + getTurno().getId());
 
-            //TODO AQUI ME HE QUEDADO, SEGUIR POR RESOLVEREFECTOS
-            boolean efectoResuelto = resolverEfectos(getTurno());
-            if (efectoResuelto) {
-                finPartida = iniciarTurno(getTurno());
-            }
+        //TODO AQUI ME HE QUEDADO, SEGUIR POR RESOLVEREFECTOS
+        boolean efectoResuelto = resolverEfectos(getTurno());
+        this.filaCartas = 0;
+        reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
 
     }
 
-    public boolean iniciarTurno(JugadorInterface jugador) {
-        int opcio = 0;
-        boolean accioFeta = false;
-        ArrayList<JButton> cartasMano = new ArrayList<>();
-        cartasMano.add(cartasMano0);
-        cartasMano.add(cartasMano1);
-        cartasMano.add(cartasMano1);
-        cartasMano.add(cartasMano3);
-        cartasMano.add(cartasMano4);
-        cartasMano.add(cartasMano5);
-        cartasMano.add(cartasMano6);
-        for (int i = 0; i < cartasMano.size(); i++) {
-
-            if (jugador.getMano().size() > i) {
-                cartasMano.get(i).setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + jugador.getMano().get(i).getName()
-                        .replace(" ", "") + ".png"));
-            } else {
-                cartasMano.get(i).setIcon(null);
-            }
-        }
-        /*if (opcio <= jugador.getMano().size()) {
-            accioFeta = this._baralla.afegirMunt(jugador.getMano().get(opcio - 1));
-            if (accioFeta) {
-                jugador.getMano().remove(opcio - 1);
-                usarCarta();
-            }
-
-        } else {
-            accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
-            if (!accioFeta) {
-                System.out.println("No hay cartas, pasar turno?");
-                if (Menu("Si", "No") == 1) {
-                    accioFeta = true;
-                }
-            }
-
-        }*/
-
-        return jugador.getMano().isEmpty();
+    private void cambioImagenMunt() {
+        String nomCartaMunt = this._baralla.veureMunt().get(this._baralla.veureMunt().size() - 1).getName();
+        pile.setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + nomCartaMunt.replace(" ", "") + ".png"));
     }
 
     public JugadorInterface getTurno() {
@@ -121,13 +84,22 @@ public class JuegoUI extends javax.swing.JFrame {
         switch (cartaJugada.getNumero()) {
             case "Pierde Turno ":
                 pasarTurno();
+                pasarTurno();
+                this.filaCartas = 0;
+                reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
                 break;
             case "Cambio de Sentido ":
                 invertirSentido();
+                pasarTurno();
+                this.filaCartas = 0;
+                reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
                 break;
             case "+2 ":
                 this._efectoEnJuego = cartaJugada;
                 this._efectoRobarCartas += 2;
+                pasarTurno();
+                this.filaCartas = 0;
+                reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
                 break;
             case "Comodin ":
                 cambioColor(cartaJugada);
@@ -138,34 +110,25 @@ public class JuegoUI extends javax.swing.JFrame {
                 this._efectoRobarCartas += 4;
                 break;
             default:
+                pasarTurno();
+                this.filaCartas = 0;
+                reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
                 break;
         }
+
     }
 
     private boolean resolverEfectos(JugadorInterface jugador) {
         boolean efectoResuelto = true;
         if (this._efectoRobarCartas != 0) {
             this.labelEfecto.setText("Tienes que robar " + this._efectoRobarCartas + " cartas");
-            ArrayList<CartaInterfaz> cartasCounter = buscarCounter(jugador);
-            if (cartasCounter.isEmpty()) {
-                efectoResuelto = resolverEfectoRobar(jugador);
-            } else {
-                ArrayList<JButton> cartasMano = new ArrayList<>();
-                cartasMano.add(cartasMano0);
-                cartasMano.add(cartasMano1);
-                cartasMano.add(cartasMano1);
-                cartasMano.add(cartasMano3);
-                cartasMano.add(cartasMano4);
-                cartasMano.add(cartasMano5);
-                cartasMano.add(cartasMano6);
-                for (int i = 0; i < cartasMano.size(); i++) {
-                    if (cartasCounter.size() > i) {
-                        cartasMano.get(i).setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + cartasCounter.get(i).getName()
-                                .replace(" ", "") + ".png"));
-                    } else {
-                        cartasMano.get(i).setIcon(null);
-                    }
-                }
+            //A MEDIAS: PODER COUNTEREAR UN +2
+
+            //ArrayList<CartaInterfaz> cartasCounter = buscarCounter(jugador);
+            //if (cartasCounter.isEmpty()) {
+            efectoResuelto = resolverEfectoRobar(jugador);
+            /*} else {
+
                 int opcio = MenuCartas(cartasCounter);
                 if (opcio <= cartasCounter.size()) {
                     int posicion = buscarCarta(cartasCounter.get(opcio - 1), jugador.getMano());
@@ -179,7 +142,7 @@ public class JuegoUI extends javax.swing.JFrame {
                     efectoResuelto = resolverEfectoRobar(jugador);
                 }
 
-            }
+            }*/
 
         }
         return efectoResuelto;
@@ -217,10 +180,20 @@ public class JuegoUI extends javax.swing.JFrame {
     private void cambioColor(CartaInterfaz cartaJugada) {
         this._efectoEnJuego = cartaJugada;
         panelColores.setVisible(true);
-        botonRobar.setEnabled(false);
-        latch = new CountDownLatch(1);
-        esperar();
-        this._efectoEnJuego = null;
+        enableBasics(false);
+    }
+
+    public void enableBasics(boolean enable) {
+        botonRobar.setEnabled(enable);
+        botonSiguiente.setEnabled(enable);
+        botonAnterior.setEnabled(enable);
+        cartasMano0.setEnabled(enable);
+        cartasMano1.setEnabled(enable);
+        cartasMano2.setEnabled(enable);
+        cartasMano3.setEnabled(enable);
+        cartasMano4.setEnabled(enable);
+        cartasMano5.setEnabled(enable);
+        cartasMano6.setEnabled(enable);
     }
 
     public void esperar() {
@@ -236,19 +209,84 @@ public class JuegoUI extends javax.swing.JFrame {
     }
 
     public void pasarTurno() {
-        if (this._sentido) {
-            this._turno++;
-            if (this._turno == this._jugadores.size() + 1) {
-                this._turno = 1;
-            }
+        if (getTurno().getMano().isEmpty()) {
+            labelEfecto.setText("VICTORIA JUGADOR " + getTurno().getId());
+            enableBasics(false);
         } else {
-            this._turno--;
-            if (this._turno == 0) {
-                this._turno = this._jugadores.size();
+            if (this._sentido) {
+                this._turno++;
+                if (this._turno == this._jugadores.size() + 1) {
+                    this._turno = 1;
+                }
+            } else {
+                this._turno--;
+                if (this._turno == 0) {
+                    this._turno = this._jugadores.size();
+                }
             }
+            labelJugador.setText("Jugador " + getTurno().getId());
+            resolverEfectos(getTurno());
         }
-        labelJugador.setText("Jugador " + getTurno().getId());
     }
+
+    public ArrayList<JButton> manoEnBotones(List<CartaInterfaz> mano) {
+        ArrayList<JButton> cartasMano = new ArrayList<>();
+        for (CartaInterfaz cartaInterfaz : mano) {
+            JButton cartaBoton = new JButton(new javax.swing.ImageIcon("src\\imagenes\\"
+                    + cartaInterfaz.getName().replace(" ", "") + ".png"));
+            cartasMano.add(cartaBoton);
+        }
+        return cartasMano;
+    }
+
+    public boolean reemplazarFilaCartas(ArrayList<JButton> cartasMano, int fila) {
+        int pos = fila * CARTAS_POR_FILA;
+        boolean cambiado = false;
+        if (pos < cartasMano.size()) {
+            cartasMano0.setIcon(cartasMano.get(pos).getIcon());
+            cambiado = true;
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano1.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano1.setIcon(null);
+            }
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano2.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano2.setIcon(null);
+            }
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano3.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano3.setIcon(null);
+            }
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano4.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano4.setIcon(null);
+            }
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano5.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano5.setIcon(null);
+            }
+            pos++;
+            if (pos < cartasMano.size()) {
+                cartasMano6.setIcon(cartasMano.get(pos).getIcon());
+            } else {
+                cartasMano6.setIcon(null);
+            }
+            pos++;
+
+        }
+        return cambiado;
+    }
+    private static final int CARTAS_POR_FILA = 7;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -295,9 +333,19 @@ public class JuegoUI extends javax.swing.JFrame {
 
         botonAnterior.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
         botonAnterior.setText("<");
+        botonAnterior.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonAnteriorActionPerformed(evt);
+            }
+        });
 
         botonSiguiente.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
         botonSiguiente.setText(">");
+        botonSiguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonSiguienteActionPerformed(evt);
+            }
+        });
 
         labelJugador.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
 
@@ -363,7 +411,6 @@ public class JuegoUI extends javax.swing.JFrame {
 
         labelEfecto.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 36)); // NOI18N
 
-        cartasMano0.setBackground(null);
         cartasMano0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano0);
         cartasMano0.setContentAreaFilled(false);
@@ -376,26 +423,56 @@ public class JuegoUI extends javax.swing.JFrame {
         cartasMano1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano1);
         cartasMano1.setContentAreaFilled(false);
+        cartasMano1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano1ActionPerformed(evt);
+            }
+        });
 
         cartasMano2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano2);
         cartasMano2.setContentAreaFilled(false);
+        cartasMano2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano2ActionPerformed(evt);
+            }
+        });
 
         cartasMano3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano3);
         cartasMano3.setContentAreaFilled(false);
+        cartasMano3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano3ActionPerformed(evt);
+            }
+        });
 
         cartasMano4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano4);
         cartasMano4.setContentAreaFilled(false);
+        cartasMano4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano4ActionPerformed(evt);
+            }
+        });
 
         cartasMano5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano5);
         cartasMano5.setContentAreaFilled(false);
+        cartasMano5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano5ActionPerformed(evt);
+            }
+        });
 
         cartasMano6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/0Amarillo.png"))); // NOI18N
         grupoCartas.add(cartasMano6);
         cartasMano6.setContentAreaFilled(false);
+        cartasMano6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cartasMano6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -459,15 +536,13 @@ public class JuegoUI extends javax.swing.JFrame {
                         .addComponent(labelJugador, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
+                    .addComponent(panelColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(labelEfecto, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(104, 104, 104)))
+                        .addGap(89, 89, 89)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(515, 515, 515)
+                        .addGap(90, 90, 90)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(botonAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -494,8 +569,10 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         JugadorInterface jugador = getTurno();
         boolean accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
-        if(accioFeta){
+        if (accioFeta) {
             pasarTurno();
+            this.filaCartas = 0;
+            reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
         }
     }//GEN-LAST:event_botonRobarActionPerformed
 
@@ -504,8 +581,11 @@ public class JuegoUI extends javax.swing.JFrame {
         this._efectoEnJuego.setTipo("Rojo");
         this._efectoEnJuego.setName(this._efectoEnJuego.getName() + this._efectoEnJuego.getTipo());
         panelColores.setVisible(false);
-        botonRobar.setEnabled(true);
-        latch.countDown();
+        enableBasics(true);
+        cambioImagenMunt();
+        pasarTurno();
+        this.filaCartas = 0;
+        reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
     }//GEN-LAST:event_botonRojoActionPerformed
 
     private void botonAmarilloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAmarilloActionPerformed
@@ -513,8 +593,11 @@ public class JuegoUI extends javax.swing.JFrame {
         this._efectoEnJuego.setTipo("Amarillo");
         this._efectoEnJuego.setName(this._efectoEnJuego.getName() + this._efectoEnJuego.getTipo());
         panelColores.setVisible(false);
-        botonRobar.setEnabled(true);
-        latch.countDown();
+        enableBasics(true);
+        cambioImagenMunt();
+        pasarTurno();
+        this.filaCartas = 0;
+        reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
     }//GEN-LAST:event_botonAmarilloActionPerformed
 
     private void botonVerdeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonVerdeActionPerformed
@@ -522,8 +605,11 @@ public class JuegoUI extends javax.swing.JFrame {
         this._efectoEnJuego.setTipo("Verde");
         this._efectoEnJuego.setName(this._efectoEnJuego.getName() + this._efectoEnJuego.getTipo());
         panelColores.setVisible(false);
-        botonRobar.setEnabled(true);
-        latch.countDown();
+        enableBasics(true);
+        cambioImagenMunt();
+        pasarTurno();
+        this.filaCartas = 0;
+        reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
     }//GEN-LAST:event_botonVerdeActionPerformed
 
     private void botonAzulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAzulActionPerformed
@@ -531,14 +617,102 @@ public class JuegoUI extends javax.swing.JFrame {
         this._efectoEnJuego.setTipo("Azul");
         this._efectoEnJuego.setName(this._efectoEnJuego.getName() + this._efectoEnJuego.getTipo());
         panelColores.setVisible(false);
-        botonRobar.setEnabled(true);
-        latch.countDown();
+        enableBasics(true);
+        cambioImagenMunt();
+        pasarTurno();
+        this.filaCartas = 0;
+        reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
     }//GEN-LAST:event_botonAzulActionPerformed
 
     private void cartasMano0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano0ActionPerformed
         // TODO add your handling code here:
-
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7);
+            cambioImagenMunt();
+            usarCarta();
+        }
     }//GEN-LAST:event_cartasMano0ActionPerformed
+
+    private void botonSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonSiguienteActionPerformed
+        // TODO add your handling code here:
+        this.filaCartas++;
+        boolean cambiado = reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
+        if (!cambiado) {
+            this.filaCartas--;
+        }
+
+    }//GEN-LAST:event_botonSiguienteActionPerformed
+
+    private void botonAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAnteriorActionPerformed
+        // TODO add your handling code here:
+        if (this.filaCartas > 0) {
+            this.filaCartas--;
+            reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
+        }
+    }//GEN-LAST:event_botonAnteriorActionPerformed
+
+    private void cartasMano1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano1ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 1));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 1);
+            cambioImagenMunt();
+            usarCarta();
+
+        }
+    }//GEN-LAST:event_cartasMano1ActionPerformed
+
+    private void cartasMano2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano2ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 2));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 2);
+            cambioImagenMunt();
+            usarCarta();
+        }
+    }//GEN-LAST:event_cartasMano2ActionPerformed
+
+    private void cartasMano3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano3ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 3));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 3);
+            cambioImagenMunt();
+            usarCarta();
+        }
+    }//GEN-LAST:event_cartasMano3ActionPerformed
+
+    private void cartasMano4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano4ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 4));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 4);
+            cambioImagenMunt();
+            usarCarta();
+        }
+    }//GEN-LAST:event_cartasMano4ActionPerformed
+
+    private void cartasMano5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano5ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 5));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 5);
+            cambioImagenMunt();
+            usarCarta();
+        }
+    }//GEN-LAST:event_cartasMano5ActionPerformed
+
+    private void cartasMano6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cartasMano6ActionPerformed
+        // TODO add your handling code here:
+        boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 6));
+        if (puesta) {
+            getTurno().getMano().remove(this.filaCartas * 7 + 6);
+            cambioImagenMunt();
+            usarCarta();
+
+        }
+    }//GEN-LAST:event_cartasMano6ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
