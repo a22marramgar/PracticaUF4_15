@@ -67,7 +67,8 @@ public class JuegoUI extends javax.swing.JFrame {
 
     private void cambioImagenMunt() {
         String nomCartaMunt = this._baralla.veureMunt().get(this._baralla.veureMunt().size() - 1).getName();
-        pile.setIcon(new javax.swing.ImageIcon("src\\imagenes\\" + nomCartaMunt.replace(" ", "") + ".png"));
+        pile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/"
+                    + nomCartaMunt.replace(" ", "") + ".png")));
     }
 
     public JugadorInterface getTurno() {
@@ -232,8 +233,8 @@ public class JuegoUI extends javax.swing.JFrame {
     public ArrayList<JButton> manoEnBotones(List<CartaInterfaz> mano) {
         ArrayList<JButton> cartasMano = new ArrayList<>();
         for (CartaInterfaz cartaInterfaz : mano) {
-            JButton cartaBoton = new JButton(new javax.swing.ImageIcon("src\\imagenes\\"
-                    + cartaInterfaz.getName().replace(" ", "") + ".png"));
+            JButton cartaBoton = new JButton(new javax.swing.ImageIcon(getClass().getResource("/imagenes/"
+                    + cartaInterfaz.getName().replace(" ", "") + ".png")));
             cartasMano.add(cartaBoton);
         }
         return cartasMano;
@@ -570,6 +571,7 @@ public class JuegoUI extends javax.swing.JFrame {
         JugadorInterface jugador = getTurno();
         boolean accioFeta = jugador.addCartas(this._baralla.repartirCartes(1));
         if (accioFeta) {
+            labelEfecto.setText("");
             pasarTurno();
             this.filaCartas = 0;
             reemplazarFilaCartas(manoEnBotones(getTurno().getMano()), this.filaCartas);
@@ -628,6 +630,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7);
             cambioImagenMunt();
             usarCarta();
@@ -656,6 +659,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 1));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 1);
             cambioImagenMunt();
             usarCarta();
@@ -667,6 +671,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 2));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 2);
             cambioImagenMunt();
             usarCarta();
@@ -677,6 +682,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 3));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 3);
             cambioImagenMunt();
             usarCarta();
@@ -687,6 +693,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 4));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 4);
             cambioImagenMunt();
             usarCarta();
@@ -697,6 +704,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 5));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 5);
             cambioImagenMunt();
             usarCarta();
@@ -707,6 +715,7 @@ public class JuegoUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         boolean puesta = this._baralla.afegirMunt(getTurno().getMano().get(this.filaCartas * 7 + 6));
         if (puesta) {
+            labelEfecto.setText("");
             getTurno().getMano().remove(this.filaCartas * 7 + 6);
             cambioImagenMunt();
             usarCarta();
